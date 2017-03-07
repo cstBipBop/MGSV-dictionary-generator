@@ -5,7 +5,7 @@ local e={
 		doExe=false
 	},
 	defaultCfg={
-		bruteForceStopCount=2e6,
+		bruteForceStopCount=2e6, -- start to run into memory issues beyond 2e6 lines, dependent on length of entries
 		timeEachDictionaryAttack=1
 	},
 	dict={
@@ -26,7 +26,8 @@ local e={
 		hashes={
 			lngFull='lib/hash/lng/full.txt',
 			lngUndefined='lib/hash/lng/undefined.txt',
-			qar='lib/hash/qar/hashes.txt'
+			qarAll_cat11='lib/hash/qar/hashes_all_cat11.txt',
+			qarAll_full='lib/hash/qar/hashes_full.txt'
 		},
 		exe={
 			path=dir..'/lib/exe/qar/mgsvPathHasher.exe',
@@ -74,7 +75,6 @@ local L={
 
 local assert=assert
 local collectgarbage=collectgarbage
-local ipairs=ipairs
 local pairs=pairs
 local tostring=tostring
 local type=type
@@ -90,7 +90,7 @@ e.userInput={
 	files={
 		dictionary=e.lib.dictionary.gameLower,
 		exe=e.lib.exe.path,
-		hashes=e.lib.hashes.qar,
+		hashes=e.lib.hashes.qarAll_cat11,
 		luaTable=e.lib.dictionary.qarStr
 	},
 	luaConfig={
@@ -102,7 +102,7 @@ e.userInput={
 		bruteForce={
 			defaultSymbols={'','_'}, -- any characters not covered by as2Table
 			as2Table={az=true,AZ=true,num=true}, -- what character sets to generate
-			overrideStopCountWithInt={false,2} -- [1]=enabled/disabled; [2]=0<[2]<2e6; adjust this if creating absurdely long entries
+			overrideStopCountWithInt={false,14e5} -- [1]=enabled/disabled; [2]=0<[2]<2e6; adjust this if creating absurdely long entries
 		},
 		strings={
 			_='_',
@@ -213,8 +213,8 @@ end
 
 e.userInput=e.init(e.userInput)
 e.init=nil
---table.remove(e.lib)
---collectgarbage()
+table.remove(e.lib)
+collectgarbage()
 
 function e.backup()
 	local l=L
@@ -223,8 +223,8 @@ end
 
 function e.removeDuplicateEntries(new,old)
 	local n=#old
-	os.execute('echo dupeRemoval')
-	os.execute('echo #new='..#new)
+	--os.execute('echo dupeRemoval')
+	--os.execute('echo #new='..#new)
 
 	for i=1,#new do
 		n=n+1
@@ -244,7 +244,7 @@ function e.removeDuplicateEntries(new,old)
 	end
 
 	n,aDuplicate,new,old=nil
-	os.execute('echo '..#t)
+	--os.execute('echo '..#t)
 
 	return t
 end
@@ -273,7 +273,7 @@ function e.verifyHashAndRemoveDuplicates(new,hashList)
 			aDuplicate[t[n]]=true
 		end
 	end
-	os.execute('echo '..#t) --1
+	--os.execute('echo '..#t) --1
 
 	aDuplicate=nil
 	local m={}
@@ -299,24 +299,23 @@ function e.verifyHashAndRemoveDuplicates(new,hashList)
 end
 
 function e.createNewDictionary()
-	os.execute('echo '..os.clock()..':start of e.createNewDictionary()')
 	local l=L
 
-	os.execute('echo '..os.clock()..':creating output file')
+	l.cmd('echo '..l.time()..': creating output file')
 	l.run(e.command.doExe)
 	local file=l.open(e.files.output)
 	l=nil
 	local n=0
 	local o={}
 
-	os.execute('echo '..os.clock()..':freeing memory')
+	L.cmd('echo '..L.time()..': freeing memory')
 	collectgarbage() -- required, else lua randomly screws up line additions to table
-	os.execute('echo '..os.clock()..':garbage done. importing lines from output file.')
+	L.cmd('echo '..L.time()..': importing lines from output file')
 	for line in file:lines() do
 		n=n+1
 		o[n]=line
 	end
-	os.execute('echo '..os.clock()..':done. splitting table o')
+	L.cmd('echo '..L.time()..': splitting table o')
 
 	local oEntries={}
 	local oHashes={}
@@ -324,7 +323,7 @@ function e.createNewDictionary()
 	if e.hashIsQAR then
 		for i=1,n do
 			oEntries[i]=o[i]:match('^(.*)%s')
-			oHashes[i]=o[i]:match('...........$')
+			oHashes[i]=o[i]:match('%s%w(%w+)$')
 		end
 	else
 		for i=1,n do
@@ -334,48 +333,33 @@ function e.createNewDictionary()
 	end
 
 	o=nil
-	os.execute('echo '..os.clock()..':freeing memory')
-	collectgarbage()
-	os.execute('echo '..os.clock()..':done. calling e.verifyHashAndRemoveDuplicates()')
 	o=e.verifyHashAndRemoveDuplicates(oHashes,e.dict.hashes)
-	os.execute('echo '..os.clock()..':done. freeing memory')
-	collectgarbage()
-	os.execute('echo '..os.clock()..':done. creating new output table')
 
---[
-	n=0
-	for i=1,#oHashes do
-		n=n+1
-		if o[n]==oHashes[i] then
-			o[i]=oEntries[i]
-		end
-	end
---]]
---[==[
+	--for i=1,#o do
+		--if oHashes[o[i]] then
+		--	o[i]=oEntries[o[i]]
+		--end
+	--end
+
 	for i=1,#o do
 		for I=1,n do
 			if o[i]==oHashes[I] then
 				o[i]=oEntries[I]
 			end
 		end
-	end--]==]
-	os.execute('echo '..os.clock()..':done. freeing memory')
-	collectgarbage()
-	os.execute('echo '..os.clock()..':done. calling e.removeDuplicateEntries')
+	end
 
 	oEntries,oHashes=nil
-	--collectgarbage()
 
 	return e.removeDuplicateEntries(o,e.dict.entries)
 end
 
 function e.loop()
-	os.execute('echo '..os.clock()..':start of e.loop(). calling e.createNewDictionary()')
+	L.cmd('echo '..L.time()..': calling e.createNewDictionary()')
 	local t=e.createNewDictionary()
-	os.execute('echo '..os.clock()..'done. back in e.loop()')
+	L.cmd('echo '..L.time()..'back in e.loop()')
 	local l=L
 	local dict=e.files.dictionary
-	os.execute('echo dictionary=='..tostring(dict))
 	local file=l.open(dict,'w')
 
 	for i=1,#t do
@@ -449,7 +433,6 @@ function e:bruteForce()--e.userinput.funcConfig
 	end
 	local n=startCount
 	t=nil
-	local concat=L.concat
 	local c1,c2,c3,c4,c5,c6,c7
 
 	for i=1,#I do c1=I[i]
@@ -467,17 +450,13 @@ function e:bruteForce()--e.userinput.funcConfig
 													for i=1,#fi3 do wFi3=fi3[i]
 														for i=1,#fi4 do wFi4=fi4[i]
 
-															--file:write(concat(w1,wFi1,_,wFi2,w3),'\n')
-															--file:write(w1,wFi1,_,wFi2,w3,'\n')
-															--file:write(concat({w1,wFo1,w2,wFi1,_,wFi2,c7,c6,c5,w3,w2,wFi1,_,wFi2,c7,c6,c5,_,wFi3,_,wFi4}),'\n')
 															file:write(w1,wFo1,w2,wFi1,_,wFi2,c7,c6,c5,w3,w2,wFi1,_,wFi2,c7,c6,c5,_,wFi3,_,wFi4,'\n')
 															--file:write('/Assets/tpp/ui/texture/Resource/keyitem/icon/ui_kit_sicula_covisitor_alp','\n')
 															n=n-1
 
 															if n<1 then
-																os.execute('echo '..os.clock()..': max gen count of '..startCount..' reached. calling e.loop()')
+																L.cmd('echo '..L.time()..': max generated line count of '..startCount..' reached; calling e.loop()')
 																n=startCount
-																--os.execute('echo '..n)
 																file:close()
 																file=e.loop()
 															end
@@ -508,7 +487,6 @@ function e:dictionaryAttack()
 	local l=L
 	local time=l.time
 	local start=time()+1
-	local concat=l.concat
 	local random=l.random
 	local file=l.open(e.files.input,'w')
 	l=nil
