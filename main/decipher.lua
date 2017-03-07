@@ -470,8 +470,8 @@ function e:bruteForce()--e.userinput.funcConfig
 															--file:write(concat(w1,wFi1,_,wFi2,w3),'\n')
 															--file:write(w1,wFi1,_,wFi2,w3,'\n')
 															--file:write(concat({w1,wFo1,w2,wFi1,_,wFi2,c7,c6,c5,w3,w2,wFi1,_,wFi2,c7,c6,c5,_,wFi3,_,wFi4}),'\n')
-															--file:write(w1,wFo1,w2,wFi1,_,wFi2,c7,c6,c5,w3,w2,wFi1,_,wFi2,c7,c6,c5,_,wFi3,_,wFi4,'\n')
-															file:write('/Assets/tpp/ui/texture/Resource/keyitem/icon/ui_kit_sicula_covisitor_alp','\n')
+															file:write(w1,wFo1,w2,wFi1,_,wFi2,c7,c6,c5,w3,w2,wFi1,_,wFi2,c7,c6,c5,_,wFi3,_,wFi4,'\n')
+															--file:write('/Assets/tpp/ui/texture/Resource/keyitem/icon/ui_kit_sicula_covisitor_alp','\n')
 															n=n-1
 
 															if n<1 then
