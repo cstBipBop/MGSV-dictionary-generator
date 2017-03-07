@@ -102,7 +102,7 @@ e.userInput={
 		bruteForce={
 			defaultSymbols={'','_'}, -- any characters not covered by as2Table
 			as2Table={az=true,AZ=true,num=true}, -- what character sets to generate
-			overrideStopCountWithInt={true,2e5} -- [1]=enabled/disabled; [2]=0<[2]<2e6; adjust this if creating absurdely long entries
+			overrideStopCountWithInt={false,2} -- [1]=enabled/disabled; [2]=0<[2]<2e6; adjust this if creating absurdely long entries
 		},
 		strings={
 			_='_',
@@ -213,8 +213,8 @@ end
 
 e.userInput=e.init(e.userInput)
 e.init=nil
-table.remove(e.lib)
-collectgarbage()
+--table.remove(e.lib)
+--collectgarbage()
 
 function e.backup()
 	local l=L
@@ -223,6 +223,8 @@ end
 
 function e.removeDuplicateEntries(new,old)
 	local n=#old
+	os.execute('echo dupeRemoval')
+	os.execute('echo #new='..#new)
 
 	for i=1,#new do
 		n=n+1
@@ -242,6 +244,7 @@ function e.removeDuplicateEntries(new,old)
 	end
 
 	n,aDuplicate,new,old=nil
+	os.execute('echo '..#t)
 
 	return t
 end
@@ -249,14 +252,19 @@ end
 function e.verifyHashAndRemoveDuplicates(new,hashList)
 	local n=0
 	local isValid={}
+	--os.execute('echo '..new[1]..new[2])
+	--new={72f968ae18b,72f968ae18b}
 
 	for i=1,#hashList do
 		isValid[hashList[i]]=true
 	end
+	--os.execute('echo #hashList = '..#hashList)
+	--os.execute('echo isValid[72f968ae18b] == '..tostring(isValid['72f968ae18b']))
 
-	hashList=nil
+	--hashList=nil
 	local aDuplicate={}
 	local t={}
+
 
 	for i=1,#new do
 		if not aDuplicate[new[i]] then
@@ -265,36 +273,50 @@ function e.verifyHashAndRemoveDuplicates(new,hashList)
 			aDuplicate[t[n]]=true
 		end
 	end
+	os.execute('echo '..#t) --1
 
 	aDuplicate=nil
-
-	for i=1,#new do
-		if isValid[new[i]] then
+	local m={}
+	for i=1,#t do
+		if isValid[t[i]] then
 			n=n+1
-			t[n]=new[i]
+			m[#m+1]=t[i]
 		end
 	end
 
+
+	--[====[for i=1,#new do
+		if isValid[new[i] ] then
+			n=n+1
+			t[n]=new[i]
+			os.execute('echo isValid t[n]=new[i] = '..tostring(t[n]))
+		end
+	end--]====]
+
 	new,n,isValid=nil
 
-	return t
+	return m
 end
 
 function e.createNewDictionary()
+	os.execute('echo '..os.clock()..':start of e.createNewDictionary()')
 	local l=L
 
+	os.execute('echo '..os.clock()..':creating output file')
 	l.run(e.command.doExe)
 	local file=l.open(e.files.output)
 	l=nil
 	local n=0
 	local o={}
 
+	os.execute('echo '..os.clock()..':freeing memory')
 	collectgarbage() -- required, else lua randomly screws up line additions to table
-
+	os.execute('echo '..os.clock()..':garbage done. importing lines from output file.')
 	for line in file:lines() do
 		n=n+1
 		o[n]=line
 	end
+	os.execute('echo '..os.clock()..':done. splitting table o')
 
 	local oEntries={}
 	local oHashes={}
@@ -302,7 +324,7 @@ function e.createNewDictionary()
 	if e.hashIsQAR then
 		for i=1,n do
 			oEntries[i]=o[i]:match('^(.*)%s')
-			oHashes[i]=o[i]:match('%s(%w+)$')
+			oHashes[i]=o[i]:match('...........$')
 		end
 	else
 		for i=1,n do
@@ -312,27 +334,49 @@ function e.createNewDictionary()
 	end
 
 	o=nil
+	os.execute('echo '..os.clock()..':freeing memory')
+	collectgarbage()
+	os.execute('echo '..os.clock()..':done. calling e.verifyHashAndRemoveDuplicates()')
 	o=e.verifyHashAndRemoveDuplicates(oHashes,e.dict.hashes)
+	os.execute('echo '..os.clock()..':done. freeing memory')
+	collectgarbage()
+	os.execute('echo '..os.clock()..':done. creating new output table')
 
+--[
+	n=0
+	for i=1,#oHashes do
+		n=n+1
+		if o[n]==oHashes[i] then
+			o[i]=oEntries[i]
+		end
+	end
+--]]
+--[==[
 	for i=1,#o do
 		for I=1,n do
 			if o[i]==oHashes[I] then
 				o[i]=oEntries[I]
 			end
 		end
-	end
+	end--]==]
+	os.execute('echo '..os.clock()..':done. freeing memory')
+	collectgarbage()
+	os.execute('echo '..os.clock()..':done. calling e.removeDuplicateEntries')
 
 	oEntries,oHashes=nil
-	collectgarbage()
+	--collectgarbage()
 
 	return e.removeDuplicateEntries(o,e.dict.entries)
 end
 
 function e.loop()
+	os.execute('echo '..os.clock()..':start of e.loop(). calling e.createNewDictionary()')
 	local t=e.createNewDictionary()
+	os.execute('echo '..os.clock()..'done. back in e.loop()')
 	local l=L
 	local dict=e.files.dictionary
-	local file=l.open(dict)
+	os.execute('echo dictionary=='..tostring(dict))
+	local file=l.open(dict,'w')
 
 	for i=1,#t do
 		file:write(t[i],'\n')
@@ -407,7 +451,6 @@ function e:bruteForce()--e.userinput.funcConfig
 	t=nil
 	local concat=L.concat
 	local c1,c2,c3,c4,c5,c6,c7
-	collectgarbage()
 
 	for i=1,#I do c1=I[i]
 		for i=1,#II do c2=II[i]
@@ -424,11 +467,17 @@ function e:bruteForce()--e.userinput.funcConfig
 													for i=1,#fi3 do wFi3=fi3[i]
 														for i=1,#fi4 do wFi4=fi4[i]
 
-															file:write(concat({w1,wFo1,w2,wFi1,_,wFi2,c7,c6,c5,w3,w2,wFi1,_,wFi2,c7,c6,c5,_,wFi3,_,wFi4}),'\n')
+															--file:write(concat(w1,wFi1,_,wFi2,w3),'\n')
+															--file:write(w1,wFi1,_,wFi2,w3,'\n')
+															--file:write(concat({w1,wFo1,w2,wFi1,_,wFi2,c7,c6,c5,w3,w2,wFi1,_,wFi2,c7,c6,c5,_,wFi3,_,wFi4}),'\n')
+															--file:write(w1,wFo1,w2,wFi1,_,wFi2,c7,c6,c5,w3,w2,wFi1,_,wFi2,c7,c6,c5,_,wFi3,_,wFi4,'\n')
+															file:write('/Assets/tpp/ui/texture/Resource/keyitem/icon/ui_kit_sicula_covisitor_alp','\n')
 															n=n-1
 
 															if n<1 then
+																os.execute('echo '..os.clock()..': max gen count of '..startCount..' reached. calling e.loop()')
 																n=startCount
+																--os.execute('echo '..n)
 																file:close()
 																file=e.loop()
 															end
@@ -484,7 +533,7 @@ function e:dictionaryAttack()
 		b=dict[random(len)]
 		c=dict[random(len)]
 
-		file:write(concat({w1,w2,_,a,_,b,slash,c}),'\n')
+		file:write(w1,w2,_,a,_,b,slash,c,'\n')
 	end
 end
 
