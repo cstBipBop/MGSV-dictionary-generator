@@ -304,7 +304,7 @@ function e.createNewDictionary()
 	l.run(e.command.doExe)
 	collectgarbage()
 
-	local file=l.open(e.files.output)
+	file=l.open(e.files.output)
 
 	if e.hashIsQAR then
 		for line in file:lines() do
