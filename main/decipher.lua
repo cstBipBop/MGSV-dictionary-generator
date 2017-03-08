@@ -395,7 +395,7 @@ function e:bruteForce()--e.userinput.funcConfig
 	local t=self.strings
 	local _=t._
 	local slash=t.slash
-	local w1,w2,w3,w4,w5=t.w1,t.w2,t.w3,t.w4,t.w3
+	local w1,w2,w3,w4,w5=t.w1,t.w2,t.w3,t.w4,t.w5
 	local wFo1,wFo2,wFo3,wFi1,wFi2,wFi3,wFi4
 
 	t=self.importedTable or false
