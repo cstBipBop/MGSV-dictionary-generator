@@ -67,6 +67,7 @@ local L={
 	run=io.popen,
 
 	s_char=string.char,
+	s_find=string.find,
 	s_format=string.format,
 	s_gsub=string.gsub,
 
@@ -100,16 +101,16 @@ e.userInput={
 	},
 	funcConfig={
 		bruteForce={
-			defaultSymbols={'','_'}, -- any characters not covered by as2Table
-			as2Table={az=true,AZ=true,num=true}, -- what character sets to generate
-			overrideStopCountWithInt={false,14e5} -- [1]=enabled/disabled; [2]=0<[2]<2e6; adjust this if creating absurdely long entries
+			defaultSymbols={}, -- any characters not covered by as2Table
+			as2Table={az=false,AZ=false,num=true}, -- what character sets to generate
+			overrideStopCountWithInt={true,5e5} -- [1]=enabled/disabled; [2]=0<[2]<2e6; adjust this if creating absurdely long entries
 		},
 		strings={
 			_='_',
 			slash='/',
 			w1='/Assets/tpp/common_source/environ/',
 			w2='/cm_',
-			w3='/sourceimages/',
+			w3='/sourceimages',
 			w4='',
 			w5='',
 			w6='',
@@ -223,8 +224,6 @@ end
 
 function e.removeDuplicateEntries(new,old)
 	local n=#old
-	--os.execute('echo dupeRemoval')
-	--os.execute('echo #new='..#new)
 
 	for i=1,#new do
 		n=n+1
@@ -244,7 +243,6 @@ function e.removeDuplicateEntries(new,old)
 	end
 
 	n,aDuplicate,new,old=nil
-	--os.execute('echo '..#t)
 
 	return t
 end
@@ -252,19 +250,13 @@ end
 function e.verifyHashAndRemoveDuplicates(new,hashList)
 	local n=0
 	local isValid={}
-	--os.execute('echo '..new[1]..new[2])
-	--new={72f968ae18b,72f968ae18b}
 
 	for i=1,#hashList do
 		isValid[hashList[i]]=true
 	end
-	--os.execute('echo #hashList = '..#hashList)
-	--os.execute('echo isValid[72f968ae18b] == '..tostring(isValid['72f968ae18b']))
 
-	--hashList=nil
 	local aDuplicate={}
 	local t={}
-
 
 	for i=1,#new do
 		if not aDuplicate[new[i]] then
@@ -273,7 +265,6 @@ function e.verifyHashAndRemoveDuplicates(new,hashList)
 			aDuplicate[t[n]]=true
 		end
 	end
-	--os.execute('echo '..#t) --1
 
 	aDuplicate=nil
 	local m={}
@@ -284,62 +275,54 @@ function e.verifyHashAndRemoveDuplicates(new,hashList)
 		end
 	end
 
-
-	--[====[for i=1,#new do
-		if isValid[new[i] ] then
-			n=n+1
-			t[n]=new[i]
-			os.execute('echo isValid t[n]=new[i] = '..tostring(t[n]))
-		end
-	end--]====]
-
 	new,n,isValid=nil
 
 	return m
 end
 
 function e.createNewDictionary()
-	local l=L
-
-	l.cmd('echo '..l.time()..': creating output file')
-	l.run(e.command.doExe)
-	local file=l.open(e.files.output)
-	l=nil
-	local n=0
-	local o={}
-
-	L.cmd('echo '..L.time()..': freeing memory')
 	collectgarbage() -- required, else lua randomly screws up line additions to table
-	L.cmd('echo '..L.time()..': importing lines from output file')
-	for line in file:lines() do
-		n=n+1
-		o[n]=line
-	end
-	L.cmd('echo '..L.time()..': splitting table o')
 
+	local l=L
 	local oEntries={}
 	local oHashes={}
 
+	--l.cmd('echo '..l.time()..': entries')
+
+	local n=0
+	local file=l.open(e.files.input)
+	
+	for line in file:lines() do
+		n=n+1
+		oEntries[n]=line
+	end
+	
+	n=0
+
+	--l.cmd('echo '..l.time()..': creating output file')
+
+	l.run(e.command.doExe)
+	collectgarbage()
+
+	local file=l.open(e.files.output)
+
 	if e.hashIsQAR then
-		for i=1,n do
-			oEntries[i]=o[i]:match('^(.*)%s')
-			oHashes[i]=o[i]:match('%s%w(%w+)$')
+		for line in file:lines() do
+			n=n+1
+			oHashes[n]=line:match('%s%x(%x+)$')
 		end
 	else
-		for i=1,n do
-			oEntries[i]=o[i]:match('^(.*)%s')
-			oHashes[i]=(o[i]:match('%s(%d+)$')+0)
+		for line in file:lines() do
+			n=n+1
+			oHashes[n]=(line:match('%s(%d+)$')+0)
 		end
 	end
 
-	o=nil
-	o=e.verifyHashAndRemoveDuplicates(oHashes,e.dict.hashes)
+	assert(#oEntries==#oHashes, string.format('#oEntries~=#oHashes. #oEntries="%s" #oHashes="%s". Possible cause: poor memory management. Lower bruteForce count or dictionaryAttack time and try again. Else add a collectgarbage() line before the problem code.', #oEntries, #oHashes))
 
-	--for i=1,#o do
-		--if oHashes[o[i]] then
-		--	o[i]=oEntries[o[i]]
-		--end
-	--end
+	l.cmd('echo last entry = '..oEntries[#oEntries])
+
+	local o=e.verifyHashAndRemoveDuplicates(oHashes,e.dict.hashes)
 
 	for i=1,#o do
 		for I=1,n do
@@ -355,9 +338,7 @@ function e.createNewDictionary()
 end
 
 function e.loop()
-	L.cmd('echo '..L.time()..': calling e.createNewDictionary()')
 	local t=e.createNewDictionary()
-	L.cmd('echo '..L.time()..'back in e.loop()')
 	local l=L
 	local dict=e.files.dictionary
 	local file=l.open(dict,'w')
@@ -432,8 +413,8 @@ function e:bruteForce()--e.userinput.funcConfig
 		startCount=e.defaultCfg.bruteForceStopCount
 	end
 	local n=startCount
-	t=nil
 	local c1,c2,c3,c4,c5,c6,c7
+	t=nil
 
 	for i=1,#I do c1=I[i]
 		for i=1,#II do c2=II[i]
@@ -450,12 +431,11 @@ function e:bruteForce()--e.userinput.funcConfig
 													for i=1,#fi3 do wFi3=fi3[i]
 														for i=1,#fi4 do wFi4=fi4[i]
 
-															file:write(w1,wFo1,w2,wFi1,_,wFi2,c7,c6,c5,w3,w2,wFi1,_,wFi2,c7,c6,c5,_,wFi3,_,wFi4,'\n')
-															--file:write('/Assets/tpp/ui/texture/Resource/keyitem/icon/ui_kit_sicula_covisitor_alp','\n')
+															file:write(w1,wFo1,w2,wFi1,_,wFi2,c5,c6,c7,w3,w2,wFi1,_,wFi2,c5,c6,c7,_,wFi3,_,wFi4,'\n')
 															n=n-1
 
 															if n<1 then
-																L.cmd('echo '..L.time()..': max generated line count of '..startCount..' reached; calling e.loop()')
+																--L.cmd('echo '..L.time()..': max generated line count of '..startCount..' reached; calling e.loop()')
 																n=startCount
 																file:close()
 																file=e.loop()
