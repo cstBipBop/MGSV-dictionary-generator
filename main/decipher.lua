@@ -26,6 +26,8 @@ local e={
 		hashes={
 			lngFull='lib/hash/lng/full.txt',
 			lngUndefined='lib/hash/lng/undefined.txt',
+			lngUndefined_mgo='lib/hash/lng/undefined_mgo.txt',
+			lngUndefined_tpp='lib/hash/lng/undefined_tpp.txt',
 			qarAll_cat11='lib/hash/qar/hashes_all_cat11.txt',
 			qarAll_full='lib/hash/qar/hashes_full.txt'
 		},
