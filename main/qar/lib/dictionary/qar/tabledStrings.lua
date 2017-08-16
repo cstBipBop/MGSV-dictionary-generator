@@ -417,7 +417,6 @@ local this={
 					'card',
 					'case',
 					'cbmp',
-					'chst',
 					'clth',
 					'clts',
 					'cnst',
@@ -477,7 +476,6 @@ local this={
 					'otdc',
 					'pack',
 					'pacth',
-					'part',
 					'patch',
 					'ptch',
 					'quip',
@@ -678,7 +676,7 @@ local this={
 				'wtct',
 				'wttw'
 			},
-			preLayer={
+			prelayer={
 				'br',
 				'bs',
 				'c0',

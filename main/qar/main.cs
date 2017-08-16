@@ -23,14 +23,14 @@ namespace Fox.StrCode32
         public static void Main(string[] args)
         {
 
-        	bool reverse = false;
-        	bool print_to_console = false;
-        	bool help = false;
+        	bool reverse = false; 			//reverse hashes by default for easier search
+        	bool print_to_console = false; 			//reverse hashes by default for easier search
+        	bool help = false; 			//reverse hashes by default for easier search
         	foreach (string arg in args)
 	        {
 	        	if (arg == "/r")
 	        	{
-	        		reverse = true;	//flip hash order to fmdl/fv2 format
+	        		reverse = true;
 	        	}
 	        	if (arg == "/p")
 	        	{
@@ -38,14 +38,14 @@ namespace Fox.StrCode32
 	        	}
 	        	if (arg == "/h")
 	        	{
-	        		help = true;	//display options in console
+	        		help = true;
 	        	}
 	        }
 
 	        if (help)
 	        {
 	        	Console.WriteLine("mgsv path hasher\nhttps://github.com/unknown321/mgsv_path_hasher");
-        		Console.WriteLine("Options:\n\t'main.exe /r' - reverse hash to fmdl/fv2 format\n\t" + 
+        		Console.WriteLine("Options:\n\t'main.exe /r' - reverse hash\n\t" + 
 									"'main.exe /p' - print hashes to console\n\t" + 
 									"'main.exe /h' - help\n");
         	}
@@ -57,9 +57,6 @@ namespace Fox.StrCode32
 	        }
         	string[] names = File.ReadAllLines("input.txt");
         	List<string> hashed_names = new List<string>();
-
-        	List<string> entries=new List<string>();
-        	entries.Add("local this={");
 
 			const string assets_const = "/Assets/";
 			foreach (string filename in names)
@@ -74,14 +71,13 @@ namespace Fox.StrCode32
 				{
 					text = filename;
 				}
-				entries.Add('"' + text + '"' + ',');
 				ulong testStrCode32 = GetStrCode32(text);
 				hash = testStrCode32.ToString("x");
-				if (hash.Length < 13)
-					hash = hash.PadLeft(13,'0');
-				hash = hash.Substring(hash.Length-13,13);
+				if (hash.Length < 12)
+					hash = hash.PadLeft(12,'0');
+				hash = hash.Substring(hash.Length-12,12);
 				if (reverse)
-				{ 
+				{
 					int chunkSize = 2;
 			        int stringLength = hash.Length;
 			        string reversedHash = "";
@@ -97,14 +93,9 @@ namespace Fox.StrCode32
 			    	Console.WriteLine(filename + "\t" + hash);
 			}
 
-			//File.WriteAllLines("output.txt", hashed_names);
-			//if (help)
-				//Console.WriteLine("\ndone");
-			//return;
-
 			File.WriteAllLines("output.txt", hashed_names);
-			entries.Add("}\nreturn this");
-			File.WriteAllLines("output.lua",entries);
+			if (help)
+				Console.WriteLine("\ndone");
 			return;
 		}}
 }

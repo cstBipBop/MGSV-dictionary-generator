@@ -9218,5 +9218,3 @@ lessening_fighting_areas
 injured_supplies_minamoto
 whittaker_lmg_einstein-rosen
 formosa_dumpster_ken
-stink_nero_platforms
-recognizes_ssw_waters

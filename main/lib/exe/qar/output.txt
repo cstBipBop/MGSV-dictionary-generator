@@ -1,0 +1,5 @@
+/Assets/tpp/chara/dlc/Pictures/dlc1_chst0_def_dtm	a89614ac648a
+/Assets/tpp/chara/dlc/Pictures/dlc1_chst0_def_nrm	8d179225fb6b
+/Assets/tpp/chara/dlc/Pictures/dlc1_chst0_def_srm	1d68c51a4f5b
+/Assets/tpp/chara/dlc/Pictures/dlc1_chst0_def_trm	b98fd8382ef4
+/Assets/tpp/ui/texture/EquipIcon/suit/ui_st_swimwear_c00_alp	19ce66d4c508
