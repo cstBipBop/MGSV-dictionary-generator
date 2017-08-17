@@ -1,5 +1,0 @@
-/Assets/tpp/chara/dlc/Pictures/dlc1_chst0_def_dtm
-/Assets/tpp/chara/dlc/Pictures/dlc1_chst0_def_nrm
-/Assets/tpp/chara/dlc/Pictures/dlc1_chst0_def_srm
-/Assets/tpp/chara/dlc/Pictures/dlc1_chst0_def_trm
-/Assets/tpp/ui/texture/EquipIcon/suit/ui_st_swimwear_c00_alp
