@@ -1,8 +1,0 @@
-cast_militants_no.2	3101264743
-flowstation_sp_seperator_tank	532403241
-name_Christine_M._Kogure	3481772587
-option_h_vr	1424049156
-pause_info_point_none	1702400502
-text_D1FX_Inc.	1463697859
-text_IMAGICA_Corp.	4070489846
-text_Ignis_Imageworks_Corp.	3562886848
