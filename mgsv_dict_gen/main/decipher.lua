@@ -43,8 +43,6 @@ local this={
 		exe={
 			path=Library.getSubfolderFullPath(Library.main.lib.exe.qar)..'\\mgsvPathHasher.exe',
 			str32=Library.getSubfolderFullPath(Library.main.lib.exe.lng)..'\\Fox.StrCode32.exe'
-			--path=dir..'/lib/exe/qar/mgsvPathHasher.exe',
-			--str32=dir..'/lib/exe/lng/Fox.StrCode32.exe'
 		},
 		
 		target={
@@ -98,6 +96,7 @@ local pairs=pairs
 local tostring=tostring
 local type=type
 
+-- setting randomseed and creating initial randomization scramble (first math.random call is always non-random)
 math.randomseed(os.time())
 random()
 
@@ -249,13 +248,12 @@ collectgarbage()
 
 
 function this.backup() -- deprecated
-	
 	cmd(s_format('copy "%s" "%s"',this.files.dictionary,this.files.backup))
 end
 
 
-local cmmnFunc=require('lib/scripts/lua/standaloneFunctions')
-this.removeDuplicateEntries=cmmnFunc.removeTableDuplicates -- newTable,previousTable
+--local cmmnFunc=require('lib/scripts/lua/standaloneFunctions')
+--this.removeDuplicateEntries=cmmnFunc.removeTableDuplicates -- newTable,previousTable
 
 
 function this.removeDuplicateEntries(new, old)
@@ -317,32 +315,14 @@ end
 function this.createNewDictionary()
 	collectgarbage() -- required, else lua randomly screws up line additions to table
 
-	
-
-	--cmd('echo '..time()..': entries')
-
-	--[[
-		local n=0
-		local file=open(e.files.input)
-		
-		for line in file:lines() do
-			n=n+1
-			oEntries[n]=line
-		end
-		
-		n=0
-	]]
-
-	--cmd('echo '..time()..': creating output file')
-
 	run(this.command.doExe)
 
 	local oEntries={}
 	local oHashes={}
 	local n=0
 	local file=open(this.files.output)
-
 	gfind=s_gfind
+
 	do
 		local bufferSize=2^13
 		if this.hashIsQAR then
@@ -354,7 +334,6 @@ function this.createNewDictionary()
 					n=n+1
 					oEntries[n]=entry
 					oHashes[n]=hash
-					--cmd(string.format('echo hash=%s entry=%s',hash,entry))
 				end
 			end
 		else
@@ -375,7 +354,6 @@ function this.createNewDictionary()
 
 	assert(#oEntries==#oHashes, string.format('#oEntries~=#oHashes. #oEntries=%s #oHashes=%s. Possible cause: poor memory management. Lower bruteForce count or dictionaryAttack time and try again. Else add a collectgarbage() line before the problem code.', #oEntries, #oHashes))
 
-	cmd('echo '..#oEntries)
 	cmd('echo last entry = '..oEntries[#oEntries])
 
 	local o=this.verifyHashAndRemoveDuplicates(oHashes,this.dict.hashes)
@@ -389,7 +367,7 @@ function this.createNewDictionary()
 	end
 
 	oEntries,oHashes=nil
-	--cmd('echo '..time()-temp_startTime)
+
 	return this.removeDuplicateEntries(o,this.dict.entries)
 end
 
@@ -404,7 +382,6 @@ function this.loop()
 	end
 	file:close()
 
-	--if backupEnabled then e.backup() end
 	if backupEnabled then
 		cmd(s_format('copy "%s" "%s"',this.files.dictionary,this.files.backup))
 	end
@@ -520,17 +497,18 @@ function this:bruteForce()--e.userinput.funcConfig
 	}
 
 	local startCount=self.bruteForce.overrideStopCountWithInt[1] and self.bruteForce.overrideStopCountWithInt[2] or this.defaultCfg.bruteForceStopCount
+
 	if this.defaultCfg.bruteForceStopCount<startCount or startCount<1 then
 		startCount=this.defaultCfg.bruteForceStopCount
 	end
+
 	local n=startCount
-	--local char={}
 	local char1,char2,char3,char4,char5,char6,char7
 	local wFi1,wFi2,wFi3,wFi4
 	local wFo1,wFo2,wFo3
 	t=nil
 
-	for i=1,#charTableAssigns[7] do char7=charTableAssigns[7][i] -- w1, fi1, n, fi2, w2
+	for i=1,#charTableAssigns[7] do char7=charTableAssigns[7][i]
 		for i=1,#charTableAssigns[6] do char6=charTableAssigns[6][i]
 			for i=1,#charTableAssigns[5] do char5=charTableAssigns[5][i]
 				for i=1,#charTableAssigns[4] do char4=charTableAssigns[4][i]
@@ -549,7 +527,6 @@ function this:bruteForce()--e.userinput.funcConfig
 															n=n-1
 
 															if n<1 then
-																--cmd('echo '..time()..': max generated line count of '..startCount..' reached; calling e.loop()')
 																n=startCount
 																file:close()
 																file=this.loop()
