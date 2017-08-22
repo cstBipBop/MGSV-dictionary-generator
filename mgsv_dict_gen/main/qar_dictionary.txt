@@ -2410,6 +2410,10 @@
 /Assets/tpp/chara/dlc/Pictures/dlc1_body0_def_mtm
 /Assets/tpp/chara/dlc/Pictures/dlc1_body0_def_nrm
 /Assets/tpp/chara/dlc/Pictures/dlc1_body0_def_srm
+/Assets/tpp/chara/dlc/Pictures/dlc1_chst0_def_dtm
+/Assets/tpp/chara/dlc/Pictures/dlc1_chst0_def_nrm
+/Assets/tpp/chara/dlc/Pictures/dlc1_chst0_def_srm
+/Assets/tpp/chara/dlc/Pictures/dlc1_chst0_def_trm
 /Assets/tpp/chara/dlc/Pictures/dlc1_main0_def_bsm
 /Assets/tpp/chara/dlc/Pictures/dlc1_main0_def_dtm
 /Assets/tpp/chara/dlc/Pictures/dlc1_main0_def_nrm
@@ -2427,6 +2431,10 @@
 /Assets/tpp/chara/dld/Pictures/dld0_hand0_def_nrm
 /Assets/tpp/chara/dld/Pictures/dld0_hand0_def_srm
 /Assets/tpp/chara/dld/Pictures/dld0_hand0_def_trm
+/Assets/tpp/chara/dld/Pictures/dld0_part0_def_bsm
+/Assets/tpp/chara/dld/Pictures/dld0_part0_def_dtm
+/Assets/tpp/chara/dld/Pictures/dld0_part0_def_nrm
+/Assets/tpp/chara/dld/Pictures/dld0_part0_def_srm
 /Assets/tpp/chara/dle/Pictures/dle0_body0_def_c00_bsm
 /Assets/tpp/chara/dle/Pictures/dle0_body0_def_c01_bsm
 /Assets/tpp/chara/dle/Pictures/dle0_body0_def_c02_bsm
@@ -32846,6 +32854,7 @@
 /Assets/tpp/ui/texture/EquipIcon/suit/ui_st_sna5_alp
 /Assets/tpp/ui/texture/EquipIcon/suit/ui_st_sna6_alp
 /Assets/tpp/ui/texture/EquipIcon/suit/ui_st_sna7_alp
+/Assets/tpp/ui/texture/EquipIcon/suit/ui_st_swimwear_c00_alp
 /Assets/tpp/ui/texture/EquipIcon/suit/ui_st_swimwear_c01_alp
 /Assets/tpp/ui/texture/EquipIcon/suit/ui_st_swimwear_c02_alp
 /Assets/tpp/ui/texture/EquipIcon/suit/ui_st_swimwear_c03_alp
@@ -38078,12 +38087,3 @@
 /shaders/dx11/GrSystemShaders_dx11
 /shaders/dx11/TppShadersNoLnm_dx11
 /shaders/dx11/TppShaders_dx11
-/Assets/tpp/chara/dlc/Pictures/dlc1_chst0_def_dtm
-/Assets/tpp/chara/dlc/Pictures/dlc1_chst0_def_nrm
-/Assets/tpp/chara/dlc/Pictures/dlc1_chst0_def_srm
-/Assets/tpp/chara/dlc/Pictures/dlc1_chst0_def_trm
-/Assets/tpp/ui/texture/EquipIcon/suit/ui_st_swimwear_c00_alp
-/Assets/tpp/chara/dld/Pictures/dld0_part0_def_bsm
-/Assets/tpp/chara/dld/Pictures/dld0_part0_def_dtm
-/Assets/tpp/chara/dld/Pictures/dld0_part0_def_nrm
-/Assets/tpp/chara/dld/Pictures/dld0_part0_def_srm
