@@ -467,7 +467,7 @@ function this:bruteForce()--e.userinput.funcConfig
 	local folderWord={}
 	local NUL={''}
 
-	if self.importedTable then
+	do
 		local t=self.importedTable
 
 		fileWord={
