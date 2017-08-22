@@ -12,9 +12,11 @@ Written for vanilla lua 5.1.5
 
 Script location: main\decipher.lua
 
+Note: The first run of the script may fail due to anti-viruses scanning the exe. Just run it again if it crashes and it should no longer happen.
+
 ## Input options (e.userInput):
 
-method{ -- set desired attack method to true and others to false
+method={ -- set desired attack method to true and others to false
 
   dictionaryAttack = boolean,
 
@@ -50,6 +52,8 @@ funcConfig.bruteForce={
   
   as2Table={az=boolean,AZ=boolean,num=boolean}, -- controls what character sets are generated in e.buildASCII(); {a-z, A-Z, 0-9}
   
+  appendDefaultSymbolsToDefaultAsciiTable = boolean, -- sets whether to add entries in the defaultSymbols table to all ASCII char tables
+  
   overrideStopCountWithInt={boolean,int} -- if [1]==true then ovverides default stop count set by e.defaultCfg.bruteForceStopCount, unless int is less than 1 or greater than default stop count
   
 }
@@ -60,13 +64,17 @@ funcConfig.importedTable -- set key for table specified by e.userInput.files.lua
 
 ## Editing method functions
 
-### e:bruteForce()
+### this:bruteForce()
 
-  For best performance, always readjust the values of Roman numeral vars and use vars further in the for blocks first. Roman numerals can be set to either the dummy table {''} or the ASCII table. e.g. local I,II,III,IV,V,VI,VII=dummy,dummy,dummy,dummy,ASCII,ASCII,ASCII
+  Function takes this.userinput.funcConfig as self arg. Table word consists of self.strings entries. NUL is a 1 length table with an empty string as the only entry, used as a psuedo nil value in the for loop. fileWord and folderWord tables recieve their entries from self.importedTable. If the user does not specify an entry or it is not valid, the NUL table is used as a substitute to prevent a script crash.
   
-  Generated entry format needs to be manually adjusted.
+  Table ASCII was changed on 08/22/2017 to consist of several subtables with preset ASCII tables for more efficient attack attempts. These subtables include the user defined one created in self.bruteForce. The keys used should make the purpose of each table self-explanatory; each consists of varying alpha, numeric, and casing combinations.
   
-  e.g. file\:write(w1,wFo1,w2,wFi1,\_,wFi2,c5,c6,c7,w3,w2,wFi1,\_,wFi2,c5,c6,c7,\_,wFi3,\_,wFi4,'\n')
+  charTableAssigns is where ASCII subtables are assigned by the user and is later accessed in the for loop. An example usage would be charTableAssigns={[1]=ASCII.alpha_lower, [2]=ASCII.alpha_lower, [3]=ASCII.user, [4]=ASCII.numeric, [5]=NUL, [6]=NUL, [7]=NUL}.
+  
+  The generated entry format needs to be manually adjusted within the for loop. char[n] == carTableAssigns[n][i], wFo[n] == folderWord[n][i], wFi[n] == fileWord[n][i], and the word table is a static one unaffected by the loop (just specify which indice you want to use).
+  
+  i.e. file\:write(word[1], char3, word[2], char3, char2, \_, wFi1, char1, word[3], wFi2, '\n')
   
 ### e:dictionaryAttack()
 
