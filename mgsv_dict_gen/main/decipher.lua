@@ -25,18 +25,18 @@ local this={
 			eng='lib/dictionary/englishDictionary.txt',
 			gameLeadCap='lib/dictionary/lang/gameStrings_leadHigh.txt',
 			gameLower='lib/dictionary/lang/gameStrings_low.txt',
-			qarStr='lib/dictionary/qar/tabledStrings'--,
-			--qarStrComp='lib/dictionary/qar/tabledStringsCompiled'
+			qarStr='lib/dictionary/qar/tabledStrings'
 		},
 
 		hashes={
-			lngFull='lib/hash/lng/fultxt',
+			lngFull='lib/hash/lng/full.txt',
 			lngUndefined='lib/hash/lng/undefined.txt',
+
 			qarAll_cat11='lib/hash/qar/hashes_all_cat11.txt', -- hashes_all_cat[concatenationLength]
-			qarAll_full='lib/hash/qar/hashes_fultxt',
+			qarAll_full='lib/hash/qar/hashes_full.txt',
 			qarChunk_cat11='lib/hash/qar/undefined_chunk_cat11.txt',
-			qarChunk_full='lib/hash/qar/undefined_chunk_fultxt',
-			qarTex_full='lib/hash/qar/undefined_textures_fultxt',
+			qarChunk_full='lib/hash/qar/undefined_chunk_full.txt',
+			qarTex_full='lib/hash/qar/undefined_textures_full.txt',
 			qarTex_cat11='lib/hash/qar/undefined_textures_cat11.txt'
 		},
 		
@@ -218,14 +218,14 @@ function this:init()
 		this.files.input=this.lib.workFiles.lngIn
 		this.files.output=this.lib.workFiles.lngOut
 		this.files.dictionary=this.lib.target.lng
-		this.command.doExe=this.lib.exe.str32..' '..this.files.input
+		this.command.doExe=Library.quotePath(this.lib.exe.str32)..' '..this.files.input
 	else -- qar
 		this.hashIsQAR=true
 		this.dict.hashes=import(self.files.hashes)
 		this.files.input=this.lib.workFiles.qarIn
 		this.files.output=this.lib.workFiles.qarOut
 		this.files.dictionary=this.lib.target.qar
-		this.command.doExe=this.lib.exe.path..' '..this.files.input
+		this.command.doExe=Library.quotePath(this.lib.exe.path)..' '..this.files.input
 	end
 
 	this.files.hashList=self.files.hashes
@@ -341,6 +341,7 @@ function this.createNewDictionary()
 	local oHashes={}
 	local n=0
 	local file=open(this.files.output)
+
 	gfind=s_gfind
 	do
 		local bufferSize=2^13
@@ -374,6 +375,7 @@ function this.createNewDictionary()
 
 	assert(#oEntries==#oHashes, string.format('#oEntries~=#oHashes. #oEntries=%s #oHashes=%s. Possible cause: poor memory management. Lower bruteForce count or dictionaryAttack time and try again. Else add a collectgarbage() line before the problem code.', #oEntries, #oHashes))
 
+	cmd('echo '..#oEntries)
 	cmd('echo last entry = '..oEntries[#oEntries])
 
 	local o=this.verifyHashAndRemoveDuplicates(oHashes,this.dict.hashes)
@@ -452,35 +454,35 @@ function this:bruteForce()--e.userinput.funcConfig
 	local t=self.strings
 	local _=t._
 	local slash=t.slash
-	  local word={
-	    t.w1,
-	    t.w2,
-	    t.w3,
-	    t.w4,
-	    t.w5
-	  }
-	  
-	  local fileWord={}
-	  local folderWord={}
-		local NUL={''}
 
-	 if self.importedTable then
-	    
-	    local t=self.importedTable
-	    
-	    fileWord={
-	      t.fi1 or NUL,
-	      t.fi2 or NUL,
-	      t.fi3 or NUL,
-	      t.fi4 or NUL
-	    }
-	    
-	    folderWord={
-	        t.fo1 or NUL,
-	        t.fo2 or NUL,
-	        t.fo3 or NUL
-	    }
-	  end
+	local word={
+		t.w1,
+		t.w2,
+		t.w3,
+		t.w4,
+		t.w5
+	}
+
+	local fileWord={}
+	local folderWord={}
+	local NUL={''}
+
+	if self.importedTable then
+		local t=self.importedTable
+
+		fileWord={
+			t.fi1 or NUL,
+			t.fi2 or NUL,
+			t.fi3 or NUL,
+			t.fi4 or NUL
+		}
+
+		folderWord={
+			t.fo1 or NUL,
+			t.fo2 or NUL,
+			t.fo3 or NUL
+		}
+	end
 
 	local file=open(this.files.input,'w')
 
@@ -619,7 +621,6 @@ function this:dictionaryAttack()
 			file:close()
 			file=this.loop()
 			start=time()+1
-			profiler.stop()
 			os.exit(exit)
 		end
 
@@ -628,7 +629,6 @@ function this:dictionaryAttack()
 		end
 
 		file:write(char[1],_,char[2],_,char[3],'\n')
-		--file:write(w1,w2,_,char[1],_,char[2],slash,char[3],'\n')
 	end
 end
 
