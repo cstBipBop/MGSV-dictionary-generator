@@ -45,16 +45,20 @@ local this={
 this.pathToHere=io.popen'cd':read('*l')
 this.masterPath=this.pathToHere:match('^(.*mgsv_dict_gen)')
 
-print(this.masterPath)
+--print(this.masterPath)
 --this.masterPath=this.masterPath:match(('^(.*)'..this.main.lib.scripts.lua:gsub('/','\\')..'$'))
 
-function this.makeUniform(slash)return(
-	slash=='/' and self:gsub('\\','/')or
-	slash=='\\'and self:gsub('/','\\')
-)end
+function this.makeUniform(slash)
+	return (
+		slash=='/' and self:gsub('\\','/') or
+		slash=='\\'and self:gsub('/','\\')
+	)
+end
+
+function this:quotePath()return ('"'..self:gsub('"','')..'"') end
 
 function this:uniformBackSlashes()return self:gsub('/','\\')end
-function this:uniformForwardSlashes()--[[print(tostring(self.self));]]return self:gsub('\\','/')end
+function this:uniformForwardSlashes()return self:gsub('\\','/')end
 function this.getMasterPath()return this.uniformForwardSlashes(this.masterPath), this.masterPath end
 
 function this:getSubfolderFullPath()
