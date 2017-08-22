@@ -1,8 +1,0 @@
-cast_militants_no.2
-flowstation_sp_seperator_tank
-name_Christine_M._Kogure
-option_h_vr
-pause_info_point_none
-text_D1FX_Inc.
-text_IMAGICA_Corp.
-text_Ignis_Imageworks_Corp.
