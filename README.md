@@ -12,7 +12,7 @@ Written for vanilla lua 5.1.5
 
 Script location: main\decipher.lua
 
-Note: The first run of the script may fail due to anti-viruses scanning the exe. Just run it again if it crashes and it should no longer happen. In some cases it may happen more than once initially, just try again with the default settings until the problem resolves. Error will produce something to the effect of:
+Note: The first run of the script may fail, just try again with the default settings until the problem resolves. An assert has been added to instruct users on what to do with the crash message of 'Issues occured. Restart the script.' Error will produce something to the effect of:
 
  decipher.lua:357: attempt to concatenate field '?' (a nil value)
  
