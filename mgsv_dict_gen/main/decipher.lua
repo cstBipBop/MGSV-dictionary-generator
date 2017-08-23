@@ -353,7 +353,8 @@ function this.createNewDictionary()
 	collectgarbage()
 
 	assert(#oEntries==#oHashes, string.format('#oEntries~=#oHashes. #oEntries=%s #oHashes=%s. Possible cause: poor memory management. Lower bruteForce count or dictionaryAttack time and try again. Else add a collectgarbage() line before the problem code.', #oEntries, #oHashes))
-
+	assert(0<#oEntries, 'Issues occured. Restart the script.')
+	
 	cmd('echo last entry = '..oEntries[#oEntries])
 
 	local o=this.verifyHashAndRemoveDuplicates(oHashes,this.dict.hashes)
