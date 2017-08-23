@@ -76,6 +76,6 @@ funcConfig.importedTable -- set key for table specified by e.userInput.files.lua
   
   i.e. file\:write(word[1], char3, word[2], char3, char2, \_, wFi1, char1, word[3], wFi2, '\n')
   
-### e:dictionaryAttack()
+### this:dictionaryAttack()
 
   Generated entry format needs to be manually adjusted, similarly to e:bruteForce(). For best performance, comment out letter unused letter vars in while loop. a,b,c hold random line selections from the selected attack dictionary.
