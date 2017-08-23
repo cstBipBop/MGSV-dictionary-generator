@@ -12,7 +12,7 @@ Written for vanilla lua 5.1.5
 
 Script location: main\decipher.lua
 
-Note: The first run of the script may fail due to anti-viruses scanning the exe. Just run it again if it crashes and it should no longer happen.
+Note: The first run of the script may fail due to anti-viruses scanning the exe. Just run it again if it crashes and it should no longer happen. In some cases it may happen more than once initially, just try again with the default settings until the problem resolves.
 
 ## Input options (this.userInput):
 
