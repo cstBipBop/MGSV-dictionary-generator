@@ -15,7 +15,9 @@ Script location: main\decipher.lua
 Note: The first run of the script may fail due to anti-viruses scanning the exe. Just run it again if it crashes and it should no longer happen. In some cases it may happen more than once initially, just try again with the default settings until the problem resolves. Error will produce something to the effect of:
 
  decipher.lua:357: attempt to concatenate field '?' (a nil value)
+ 
  stack traceback:
+ 
         decipher.lua:357: in function 'createNewDictionary'
         decipher.lua:375: in function 'loop'
         decipher.lua:553: in function 'func'
