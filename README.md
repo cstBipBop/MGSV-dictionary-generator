@@ -14,7 +14,7 @@ Script location: main\decipher.lua
 
 Note: The first run of the script may fail due to anti-viruses scanning the exe. Just run it again if it crashes and it should no longer happen.
 
-## Input options (e.userInput):
+## Input options (this.userInput):
 
 method={ -- set desired attack method to true and others to false
 
@@ -24,7 +24,7 @@ method={ -- set desired attack method to true and others to false
 
 }
 
-files={ -- select key from e.lib
+files={ -- select key from this.lib
 
   dictionary = table key, -- list of words to use in attack
   
@@ -50,17 +50,17 @@ funcConfig.bruteForce={
 
   defaultSymbols={'','\_'}, -- must be table; use any characters not covered by as2Table
   
-  as2Table={az=boolean,AZ=boolean,num=boolean}, -- controls what character sets are generated in e.buildASCII(); {a-z, A-Z, 0-9}
+  as2Table={az=boolean,AZ=boolean,num=boolean}, -- controls what character sets are generated in this.buildASCII(); {a-z, A-Z, 0-9}
   
   appendDefaultSymbolsToDefaultAsciiTable = boolean, -- sets whether to add entries in the defaultSymbols table to all ASCII char tables
   
-  overrideStopCountWithInt={boolean,int} -- if [1]==true then ovverides default stop count set by e.defaultCfg.bruteForceStopCount, unless int is less than 1 or greater than default stop count
+  overrideStopCountWithInt={boolean,int} -- if [1]==true then ovverides default stop count set by this.defaultCfg.bruteForceStopCount, unless int is less than 1 or greater than default stop count
   
 }
 
 funcConfig.strings -- set custom strings
 
-funcConfig.importedTable -- set key for table specified by e.userInput.files.luaTable; e.g. fi1={'file','source','location'}
+funcConfig.importedTable -- set key for table specified by this.userInput.files.luaTable; e.g. fi1={'file','source','location'}
 
 ## Editing method functions
 
