@@ -78,4 +78,4 @@ funcConfig.importedTable -- set key for table specified by e.userInput.files.lua
   
 ### this:dictionaryAttack()
 
-  Generated entry format needs to be manually adjusted, similarly to e:bruteForce(). For best performance, comment out letter unused letter vars in while loop. a,b,c hold random line selections from the selected attack dictionary.
+  Generated entry format needs to be manually adjusted, similarly to this:bruteForce(). For best performance, comment out letter unused letter vars in while loop. a,b,c hold random line selections from the selected attack dictionary.
