@@ -42,7 +42,7 @@ local this={
 	}
 }
 
-this.pathToHere=io.popen'cd':read('*l')
+this.pathToHere=arg[0]
 this.masterPath=this.pathToHere:match('^(.*mgsv_dict_gen)')
 
 --print(this.masterPath)
